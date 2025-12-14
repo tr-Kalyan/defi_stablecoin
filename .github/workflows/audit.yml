@@ -22,4 +22,4 @@ jobs:
 
       - run: forge test -vvv
 
-      - run: forge test --mt invariant_protocolMustHaveMoreValueThanTotalSupply -vvv --runs 256
+      - run: forge test --mt invariant_protocolMustHaveMoreValueThanTotalSupply -vvv
