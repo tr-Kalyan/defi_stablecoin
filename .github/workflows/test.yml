@@ -10,7 +10,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
         with:
           submodules: recursive
@@ -21,8 +21,8 @@ jobs:
       - name: Install dependencies
         run: forge install
 
-      - name: Show dependencies
-        run: ls -la lib/
+      - name: Verify dependencies
+        run: ls -R lib/
 
       - name: Format check
         run: forge fmt --check
