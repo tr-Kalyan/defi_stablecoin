@@ -6,14 +6,11 @@ on:
   pull_request:
   workflow_dispatch:
 
-env:
-  FOUNDRY_PROFILE: ci
-
 jobs:
-  check:
+  test:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout repository
         uses: actions/checkout@v4
         with:
           submodules: recursive
@@ -22,11 +19,10 @@ jobs:
         uses: foundry-rs/foundry-toolchain@v1
 
       - name: Install dependencies
-        run: |
-          echo "Installing dependencies..."
-          forge install
-          echo "lib/ contents:"
-          ls -la lib/ || echo "lib/ not found"
+        run: forge install
+
+      - name: Show dependencies
+        run: ls -la lib/
 
       - name: Format check
         run: forge fmt --check
