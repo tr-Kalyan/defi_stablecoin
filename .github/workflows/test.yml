@@ -1,9 +1,8 @@
 name: CI
 
-permissions: {}
-
 on:
   push:
+    branches: [ main ]
   pull_request:
   workflow_dispatch:
 
@@ -12,27 +11,31 @@ env:
 
 jobs:
   check:
-    name: Foundry project
+    strategy:
+      fail-fast: true
+
+    name: Foundry checks
     runs-on: ubuntu-latest
-    permissions:
-      contents: read
+
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v4
         with:
-          persist-credentials: false
-          submodules: recursive
+          submodules: recursive  
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
-      - name: Show Forge version
-        run: forge --version
+      - name: Install dependencies
+        run: forge install   
 
-      - name: Run Forge fmt
+      - name: Format check
         run: forge fmt --check
 
-      - name: Run Forge build
+      - name: Build with sizes
         run: forge build --sizes
 
-      - name: Run Forge tests
+      - name: Run tests
         run: forge test -vvv
+
+      - name: Run invariants (core safety)
+        run: forge test --mt invariant_protocolMustHaveMoreValueThanTotalSupply -vvv --runs 512
