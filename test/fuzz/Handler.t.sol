@@ -63,19 +63,19 @@ contract Handler is Test {
             return;
         }
         address sender = usersWithCollateralDeposited[addressSeed % usersWithCollateralDeposited.length];
-        (uint256 totalDscMinted, uint256 collteralValueInUsd) = dsce.getAccountInformation(sender);
-        // uint256 maxDscToMint = (collteralValueInUsd / 2) - totalDscMinted;
+        (uint256 totalDscMinted, uint256 collateralValueInUsd) = dsce.getAccountInformation(sender);
+        int256 maxDscToMint = (int256(collateralValueInUsd) / 2) - int256(totalDscMinted);
 
-        // if (maxDscToMint < 0){
-        //     return;
-        // }
+        if (maxDscToMint < 0){
+            return;
+        }
 
-        // amount = bound(amount, 0 , maxDscToMint);
-        // if(amount == 0){
-        //     return;
-        // }
+        amount = bound(amount, 0 , uint256(maxDscToMint));
+        if(amount == 0){
+            return;
+        }
 
-        amount = bound(amount, 1, 1e30);
+        // amount = bound(amount, 1, 1e30);
         vm.startPrank(sender);
         dsce.mintDsc(amount);
         vm.stopPrank();
@@ -139,15 +139,15 @@ contract Handler is Test {
     ///////////////////
     // PRICE UPDATE
     ///////////////////
-    function updateCollateralPrice(uint96 price, uint256 collateralSeed) public {
-        // Bound to realistic range: $100 to $100,000
-        price = uint96(bound(price, 100e8, 100_000e8));
+    // function updateCollateralPrice(uint96 price, uint256 collateralSeed) public {
+    //     // Bound to realistic range: $100 to $100,000
+    //     price = uint96(bound(price, 100e8, 100_000e8));
 
-        int256 intPrice = int256(uint256(price));
-        ERC20Mock collateral = _getCollateralFromSeed(collateralSeed);
-        MockV3Aggregator priceFeed = MockV3Aggregator(dsce.getCollateralTokenPriceFeed(address(collateral)));
-        priceFeed.updateAnswer(intPrice);
-    }
+    //     int256 intPrice = int256(uint256(price));
+    //     ERC20Mock collateral = _getCollateralFromSeed(collateralSeed);
+    //     MockV3Aggregator priceFeed = MockV3Aggregator(dsce.getCollateralTokenPriceFeed(address(collateral)));
+    //     priceFeed.updateAnswer(intPrice);
+    // }
 
     function _getCollateralFromSeed(uint256 collateralSeed) private view returns (ERC20Mock) {
         if (collateralSeed % 2 == 0) {

@@ -419,7 +419,7 @@ contract DSCEngineTest is StdCheats, Test {
         mockDsc.approve(address(mockDsce), debtToCover);
         // Act
         int256 ethUsdUpdatedPrice = 18e8; // 1 ETH = $18
-        MockV3Aggregator(ethUsdPriceFeed).updateAnswer(ethUsdUpdatedPrice);
+        MockV3Aggregator(ethUsdPriceFeed).updateRoundData(1, ethUsdUpdatedPrice, block.timestamp, block.timestamp);
         // Act/Assert
         vm.expectRevert(DSCEngine.DSCEngine__HealthFactorNotImproved.selector);
         mockDsce.liquidate(weth, user, debtToCover);
