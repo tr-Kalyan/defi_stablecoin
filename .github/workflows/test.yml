@@ -20,13 +20,17 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive  
+          submodules: recursive
 
       - name: Install Foundry
         uses: foundry-rs/foundry-toolchain@v1
 
       - name: Install dependencies
-        run: forge install   
+        run: |
+          echo "Running forge install..."
+          forge install
+          echo "lib/ contents:"
+          ls -la lib/
 
       - name: Format check
         run: forge fmt --check
@@ -34,8 +38,8 @@ jobs:
       - name: Build with sizes
         run: forge build --sizes
 
-      - name: Run tests
+      - name: Run unit tests
         run: forge test -vvv
 
-      - name: Run invariants (core safety)
+      - name: Run core invariant
         run: forge test --mt invariant_protocolMustHaveMoreValueThanTotalSupply -vvv --runs 512
