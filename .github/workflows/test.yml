@@ -11,14 +11,10 @@ env:
 
 jobs:
   check:
-    strategy:
-      fail-fast: true
-
-    name: Foundry checks
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout code
+        uses: actions/checkout@v4
         with:
           submodules: recursive
 
@@ -27,19 +23,19 @@ jobs:
 
       - name: Install dependencies
         run: |
-          echo "Running forge install..."
+          echo "Installing dependencies..."
           forge install
           echo "lib/ contents:"
-          ls -la lib/
+          ls -la lib/ || echo "lib/ not found"
 
       - name: Format check
         run: forge fmt --check
 
-      - name: Build with sizes
+      - name: Build
         run: forge build --sizes
 
-      - name: Run unit tests
+      - name: Run tests
         run: forge test -vvv
 
-      - name: Run core invariant
+      - name: Run invariant
         run: forge test --mt invariant_protocolMustHaveMoreValueThanTotalSupply -vvv --runs 512
