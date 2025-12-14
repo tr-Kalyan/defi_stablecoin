@@ -7,7 +7,7 @@
 
 pragma solidity ^0.8.19;
 
-import { Test, console } from "forge-std/Test.sol";
+import {Test, console} from "forge-std/Test.sol";
 import {StdInvariant} from "forge-std/StdInvariant.sol";
 import {DeployDSC} from "../../script/DeployDSC.s.sol";
 import {DSCEngine} from "../../src/DSCEngine.sol";
@@ -18,17 +18,17 @@ import {Handler} from "./Handler.t.sol";
 
 contract Invariants is StdInvariant, Test {
     DeployDSC deployer;
-    DSCEngine dsce; 
+    DSCEngine dsce;
     DecentralizedStableCoin dsc;
     HelperConfig config;
     address weth;
     address wbtc;
     Handler handler;
 
-    function setUp () external {
+    function setUp() external {
         deployer = new DeployDSC();
-        (dsc,dsce, config) = deployer.run();
-        (,,weth, wbtc,) = config.activeNetworkConfig();
+        (dsc, dsce, config) = deployer.run();
+        (,, weth, wbtc,) = config.activeNetworkConfig();
         // targetContract(address(dsce));
         handler = new Handler(dsce, dsc);
         targetContract(address(handler));
@@ -46,7 +46,7 @@ contract Invariants is StdInvariant, Test {
 
         console.log("weth value: ", wethValue);
         console.log("wbtc value: ", wbtcValue);
-        console.log("total supply: ",totalSupply);
+        console.log("total supply: ", totalSupply);
         console.log("Times Mint Called: ", handler.timesMintIsCalled());
         assert(wethValue + wbtcValue >= totalSupply);
     }

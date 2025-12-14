@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.19;
 
-import { AggregatorV3Interface } from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
+import {AggregatorV3Interface} from "@chainlink/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 
 /*
  * @title OracleLib
@@ -33,14 +33,20 @@ library OracleLib {
         if (updatedAt == 0 || answeredInRound < roundId) {
             revert OracleLib__StalePrice();
         }
-        
+
         uint256 secondsSince = block.timestamp - updatedAt;
         if (secondsSince > TIMEOUT) revert OracleLib__StalePrice();
 
         return (roundId, answer, startedAt, updatedAt, answeredInRound);
     }
 
-    function getTimeout(AggregatorV3Interface /* chainlinkFeed */ ) public pure returns (uint256) {
+    function getTimeout(
+        AggregatorV3Interface /* chainlinkFeed */
+    )
+        public
+        pure
+        returns (uint256)
+    {
         return TIMEOUT;
     }
 }
